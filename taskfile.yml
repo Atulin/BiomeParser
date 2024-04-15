@@ -1,0 +1,16 @@
+﻿version: '3'
+
+vars:
+    RID: win-x64 win-arm64 linux-x64 linux-arm64 osx-x64 osx-arm64
+
+tasks:
+    publish:
+        cmds:
+            - for: { var: RID }
+              cmd: dotnet publish ./BiomeParser.csproj -c Release -r {{.ITEM}} -o ./publish/{{.ITEM}}-sc --p:DebugType=none -p:PublishTrimmed=true --self-contained true
+            - for: { var: RID }
+              cmd: dotnet publish ./BiomeParser.csproj -c Release -r {{.ITEM}} -o ./publish/{{.ITEM}}-fd --p:DebugType=none --self-contained false
+            - py move.py
+    pack:
+        cmds:
+            - cmd: py move.py
